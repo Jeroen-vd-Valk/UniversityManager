@@ -1,5 +1,6 @@
 package nl.inholland.universitymanager2.controller;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +20,7 @@ import nl.inholland.universitymanager2.data.Database;
 import nl.inholland.universitymanager2.model.Grade;
 import nl.inholland.universitymanager2.model.Student;
 
+import javax.security.auth.callback.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,6 +48,16 @@ public class StudentListController implements Initializable {
         students = FXCollections.observableArrayList(database.getStudents());
 
         studentTableView.setItems(students);
+        coachColumn.setCellValueFactory(tv -> Bindings.createStringBinding(() -> (tv.getValue().getGroup().getCoach().getFirstName()) + " " + (tv.getValue().getGroup().getCoach().getLastName())));
+
+        studentTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null){
+                selectedStudent = (Student) studentTableView.getSelectionModel().getSelectedItem();
+
+                gradeTableView.setItems(FXCollections.observableArrayList(selectedStudent.getGrades())  );
+
+            }
+        });
     }
 
     public void onAddStudentClick(ActionEvent event) {
@@ -56,6 +68,7 @@ public class StudentListController implements Initializable {
             Scene scene = new Scene(fxmlLoader.load());
 
             Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setScene(scene);
             dialog.setTitle("Add student");
             dialog.showAndWait();
@@ -77,9 +90,16 @@ public class StudentListController implements Initializable {
             Scene scene = new Scene(fxmlLoader.load());
 
             Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setScene(scene);
             dialog.setTitle("Add grade");
-            dialog.show();
+            dialog.showAndWait();
+
+            if (gradeDialogController.getGrade() != null){
+                int index = students.indexOf(selectedStudent);
+                students.get(index).addGrade(gradeDialogController.getGrade());
+                gradeTableView.setItems(FXCollections.observableArrayList(students.get(index).getGrades())  );
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);

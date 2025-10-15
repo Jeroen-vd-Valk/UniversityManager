@@ -21,6 +21,12 @@ public class GradeDialogController implements Initializable {
     @FXML
     TextField gradeField;
 
+    Grade grade;
+
+    public Grade getGrade() {
+        return grade;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -32,6 +38,9 @@ public class GradeDialogController implements Initializable {
     }
 
     public void onAddClick(ActionEvent event) {
+        double gradeFieldValue = Double.parseDouble(gradeField.getText());
+        grade = new Grade(courseField.getText(), gradeFieldValue);
+
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }

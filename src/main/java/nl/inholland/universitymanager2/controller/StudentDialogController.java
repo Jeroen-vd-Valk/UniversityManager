@@ -30,11 +30,11 @@ public class StudentDialogController implements Initializable {
 
     Database database;
 
+    Student student;
+
     public Student getStudent() {
         return student;
     }
-
-    Student student;
 
     public StudentDialogController(Database database) {
         this.database = database;
