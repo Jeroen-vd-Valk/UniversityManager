@@ -1,9 +1,6 @@
 package nl.inholland.universitymanager2.controller;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +17,6 @@ import nl.inholland.universitymanager2.data.Database;
 import nl.inholland.universitymanager2.model.Grade;
 import nl.inholland.universitymanager2.model.Student;
 
-import javax.security.auth.callback.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,6 +32,7 @@ public class StudentListController implements Initializable {
 
     private Database database;
     private ObservableList<Student> students;
+    private ObservableList<Grade> grades;
     private Student selectedStudent;
 
     public StudentListController(Database database) {
@@ -45,7 +42,7 @@ public class StudentListController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        students = FXCollections.observableArrayList(database.getStudents());
+        students = FXCollections.observableList(database.getStudents());
 
         studentTableView.setItems(students);
         coachColumn.setCellValueFactory(tv -> Bindings.createStringBinding(() -> (tv.getValue().getGroup().getCoach().getFirstName()) + " " + (tv.getValue().getGroup().getCoach().getLastName())));
@@ -53,9 +50,9 @@ public class StudentListController implements Initializable {
         studentTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null){
                 selectedStudent = (Student) studentTableView.getSelectionModel().getSelectedItem();
+                grades = FXCollections.observableList(selectedStudent.getGrades());
 
-                gradeTableView.setItems(FXCollections.observableArrayList(selectedStudent.getGrades())  );
-
+                gradeTableView.setItems(grades);
             }
         });
     }
@@ -96,9 +93,13 @@ public class StudentListController implements Initializable {
             dialog.showAndWait();
 
             if (gradeDialogController.getGrade() != null){
+                grades.add(gradeDialogController.getGrade());
+                /*
                 int index = students.indexOf(selectedStudent);
                 students.get(index).addGrade(gradeDialogController.getGrade());
                 gradeTableView.setItems(FXCollections.observableArrayList(students.get(index).getGrades())  );
+
+                 */
             }
 
         } catch (IOException e) {

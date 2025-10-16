@@ -21,7 +21,7 @@ public class GradeDialogController implements Initializable {
     @FXML
     TextField gradeField;
 
-    Grade grade;
+    private Grade grade;
 
     public Grade getGrade() {
         return grade;
