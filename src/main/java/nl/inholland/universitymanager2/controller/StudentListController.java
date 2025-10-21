@@ -94,12 +94,6 @@ public class StudentListController implements Initializable {
 
             if (gradeDialogController.getGrade() != null){
                 grades.add(gradeDialogController.getGrade());
-                /*
-                int index = students.indexOf(selectedStudent);
-                students.get(index).addGrade(gradeDialogController.getGrade());
-                gradeTableView.setItems(FXCollections.observableArrayList(students.get(index).getGrades())  );
-
-                 */
             }
 
         } catch (IOException e) {
